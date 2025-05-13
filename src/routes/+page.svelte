@@ -1,2 +1,11 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script>
+	import ChatInput from '$lib/components/ChatInput.svelte'
+	import Suggestions from '$lib/components/Suggestions.svelte'
+</script>
+
+<div class="max-w-2xl w-full flex flex-col items-center mb-auto mt-auto">
+	<ChatInput />
+
+	<!-- Suggested Prompts -->
+	<Suggestions />
+</div>
