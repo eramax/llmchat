@@ -1,6 +1,14 @@
 <script>
 	import ChatInput from './ChatInput.svelte'
 	import {v4 as uuidv4} from 'uuid'
+	const ArrowLeftIcon = '/icons/arrow-left.svg'
+	const ArrowRightIcon = '/icons/arrow-right.svg'
+	const InfoIcon = '/icons/info.svg'
+	const EditIcon = '/icons/edit.svg'
+	const CopyIcon = '/icons/copy.svg'
+	const SpeakerIcon = '/icons/speaker.svg'
+	const TrashIcon = '/icons/trash.svg'
+	const RefreshIcon = '/icons/refresh.svg'
 
 	let chat = $state({
 		id: 'chat-1',
@@ -200,58 +208,38 @@
 						{#if msg.instances.length > 1}
 							<!-- Previous message -->
 							<button aria-label="Previous message" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5" onclick={() => prevInstance(i)}>
-								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-								</svg>
+								<img src={ArrowLeftIcon} alt="Previous" class="w-5 h-5" />
 							</button>
 							<!-- Next message -->
 							<button aria-label="Next message" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5" onclick={() => nextInstance(i)}>
-								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-									<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-								</svg>
+								<img src={ArrowRightIcon} alt="Next" class="w-5 h-5" />
 							</button>
 						{/if}
 						<!-- Info Icon -->
 						<button aria-label="More info" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-								<path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
-							</svg>
+							<img src={InfoIcon} alt="Info" class="w-5 h-5" />
 						</button>
 						<!-- Action buttons -->
 
 						<!-- Pencil Icon -->
 						<button aria-label="Edit" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-								<path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-							</svg>
+							<img src={EditIcon} alt="Edit" class="w-5 h-5" />
 						</button>
 						<!-- Clipboard Icon -->
 						<button aria-label="Copy" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a2.25 2.25 0 0 1-2.25 2.25h-1.5a2.25 2.25 0 0 1-2.25-2.25V4.506c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
-								/>
-							</svg>
+							<img src={CopyIcon} alt="Copy" class="w-5 h-5" />
 						</button>
 						<!-- Speaker Icon -->
 						<button aria-label="Read aloud" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" />
-							</svg>
+							<img src={SpeakerIcon} alt="Read aloud" class="w-5 h-5" />
 						</button>
 						<!-- Trash Icon -->
 						<button aria-label="Delete" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M6 18.75V8.25m12 10.5V8.25M4.5 6h15m-15 0a2.25 2.25 0 0 1 2.25-2.25h6A2.25 2.25 0 0 1 12 6m0 0h6m-6 0H4.5m9.75 0v12a2.25 2.25 0 1 1-4.5 0V6m4.5 0h3a2.25 2.25 0 1 1-4.5 0Z" />
-							</svg>
+							<img src={TrashIcon} alt="Delete" class="w-5 h-5" />
 						</button>
 						<!-- Refresh Icon -->
 						<button aria-label="Regenerate response" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-							</svg>
+							<img src={RefreshIcon} alt="Regenerate" class="w-5 h-5" />
 						</button>
 					</div>
 				</div>
