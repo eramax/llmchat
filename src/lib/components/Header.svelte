@@ -5,6 +5,7 @@
 	let modelList = []
 	let selectedModel = null
 	let isDropdownOpen = false
+	let isLoading = true
 
 	function processModels(rawModels) {
 		return rawModels
@@ -37,6 +38,7 @@
 		if (modelList.length > 0) {
 			selectedModel = modelList[0]
 		}
+		isLoading = false
 	})
 
 	function selectModel(model) {
@@ -56,9 +58,15 @@
 </script>
 
 <div class="relative">
-	<!-- Selected model display -->
-	{#if selectedModel}
-		<header class="p-3 border border-neutral-800 rounded-md flex justify-between items-center shrink-0 bg-neutral-900 cursor-pointer" on:click={toggleDropdown}>
+	<!-- Header with fixed height -->
+	<header class="p-3 border border-neutral-800 rounded-md flex justify-between items-center shrink-0 bg-neutral-900 cursor-pointer h-[74px]" on:click={toggleDropdown}>
+		{#if isLoading}
+			<!-- Loading indicator -->
+			<div class="flex items-center justify-center w-full">
+				<div class="animate-spin rounded-full h-5 w-5 border-t-2 border-l-2 border-blue-500"></div>
+				<span class="ml-2 text-sm text-neutral-400">Loading models...</span>
+			</div>
+		{:else if selectedModel}
 			<div>
 				<div class="flex items-center">
 					<span class="text-sm text-neutral-100 truncate max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
@@ -78,11 +86,19 @@
 					<span class="text-xs bg-orange-600/40 text-orange-200 px-1.5 rounded ml-1.5">{selectedModel.quantTag}</span>
 				</div>
 			</div>
-		</header>
-	{/if}
+			<div class="flex items-center space-x-3">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-neutral-400 hover:text-neutral-100 cursor-pointer transition-colors">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 12h9.75m-9.75 6h9.75M3.75 6h1.5m1.5 0h1.5m-1.5 0V18m1.5-12V6.75M3.75 12h1.5m1.5 0h1.5m-1.5 0V18m1.5-6V12m0-6v6m0 0v6m0-6H3.75m6.75 0H3.75M3.75 18h1.5m1.5 0h1.5m-1.5 0V12m1.5 6v-1.5m0 0V12" />
+				</svg>
+			</div>
+		{:else}
+			<!-- No model selected state -->
+			<div class="text-sm text-neutral-400 w-full text-center">No models available</div>
+		{/if}
+	</header>
 
 	<!-- Dropdown for model selection -->
-	{#if isDropdownOpen}
+	{#if isDropdownOpen && !isLoading}
 		<div class="absolute z-10 mt-1 w-full bg-neutral-900 border border-neutral-800 rounded-md shadow-lg max-h-60 overflow-y-auto">
 			{#each modelList as model (model.id)}
 				<div class="p-2 hover:bg-neutral-800 cursor-pointer transition-colors border-b border-neutral-800 last:border-b-0" on:click={() => selectModel(model)}>
