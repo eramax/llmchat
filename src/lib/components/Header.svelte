@@ -33,6 +33,7 @@
 	}
 
 	onMount(async () => {
+		OllamaService.init({host: 'http://localhost:11434'})
 		const rawModelData = await OllamaService.getModels()
 		modelList = processModels(rawModelData.models)
 		if (modelList.length > 0) {
