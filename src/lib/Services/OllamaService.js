@@ -46,12 +46,29 @@ const OllamaService = {
             for await (const part of response) {
                 yield part.message.content;
             }
-            return response.response_metadata; 
+            return response.response_metadata;
         } catch (error) {
             console.error('Error during chat:', error);
             throw new Error('Failed to chat with model');
         }
     },
+    //  function for a simulated stream
+    async *simulatedMarkdownChunks() {
+        const chunks = [
+            '# Welcome to Markdown Streaming!\n\nThis is the first paragraph. ',
+            'It might arrive in multiple chunks.\n\n',
+            "```javascript\n// A code block is starting\nconsole.log('Hello');\n",
+            'function greet(name) {\n  return `Hello, ${name}!`;\n}\n',
+            '```\n\n*   List item 1\n*   List item 2\n    *   Nested item A\n',
+            '*   List item 3\n\nAnother paragraph, appearing piece by piece.',
+            ' And this is the *final* piece of the stream.'
+        ]
+
+        for (const chunk of chunks) {
+            await new Promise(resolve => setTimeout(resolve, 500)) // Simulate network latency
+            yield chunk
+        }
+    }
 }
 
 export default OllamaService;

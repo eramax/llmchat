@@ -1,6 +1,9 @@
 <script>
 	import ChatInput from './ChatInput.svelte'
 	import {v4 as uuidv4} from 'uuid'
+	import MarkdownViewer from './MarkdownViewer.svelte'
+	import {MarkdownStreamProcessor} from '$lib/utils/markdownStreamProcessor'
+	import {onMount} from 'svelte'
 	const ArrowLeftIcon = '/icons/arrow-left.svg'
 	const ArrowRightIcon = '/icons/arrow-right.svg'
 	const InfoIcon = '/icons/info.svg'
@@ -9,6 +12,28 @@
 	const SpeakerIcon = '/icons/speaker.svg'
 	const TrashIcon = '/icons/trash.svg'
 	const RefreshIcon = '/icons/refresh.svg'
+
+	let finalizedHtmlContent = $state('')
+	let activeHtml = $state('')
+	let isLoading = $state(true)
+	let streamEnded = $state(false)
+
+	let processor = null
+
+	let mounted = $state(false)
+
+	onMount(() => {
+		processor = new MarkdownStreamProcessor({
+			onStateUpdate: newState => {
+				finalizedHtmlContent = newState.finalizedHtmlContent
+				activeHtml = newState.activeHtml
+				isLoading = newState.isLoading
+				streamEnded = newState.streamEnded
+			}
+		})
+		mounted = true
+		
+	})
 
 	let chat = $state({
 		id: 'chat-1',
@@ -182,69 +207,74 @@
 <div class="w-full text-white font-sans min-h-full flex flex-col justify-between" class:rtl={chat.direction === 'rtl'} dir={chat.direction}>
 	<div class="space-y-6">
 		<!-- Dynamically render all messages -->
-		{#each chat.messages as msg, i (i)}
-			<!-- Assistant Messages -->
-			<div class="flex items-start {chat.direction === 'rtl' ? 'flex-row-reverse space-x-reverse' : 'space-x-3'} max-w-full sm:max-w-2xl">
-				<!-- Avatar -->
-				<div class="flex-shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center">
-					<span class="text-black font-bold text-lg select-none">{msg.role.replace('assistant', 'AI')}</span>
-				</div>
-
-				<!-- Message Content -->
-				<div class="flex flex-col min-w-0 relative group">
-					<div class="font-semibold text-zinc-100 break-all">{msg.instances[msg.active_id].createdBy}</div>
-					<div class="text-sm text-zinc-400 flex items-center mt-0.5">
-						Thought for 10 seconds...
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3 ml-1 flex-shrink-0">
-							<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-						</svg>
+		{#if mounted}
+			{#each chat.messages as msg, i (i)}
+				<!-- Assistant Messages -->
+				<div class="flex items-start {chat.direction === 'rtl' ? 'flex-row-reverse space-x-reverse' : 'space-x-3'} max-w-full sm:max-w-2xl">
+					<!-- Avatar -->
+					<div class="flex-shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center">
+						<span class="text-black font-bold text-lg select-none">{msg.role.replace('assistant', 'AI')}</span>
 					</div>
-					{#each msg.instances[msg.active_id].body as body, bodyIndex}
-						<div class="mt-1 text-zinc-100">{body.content}</div>
-					{/each}
 
-					<div class="mt-2 flex {chat.direction === 'rtl' ? 'space-x-reverse' : ''} space-x-2.5 text-zinc-400 items-center">
-						<!-- Instance navigation arrows -->
-						{#if msg.instances.length > 1}
-							<!-- Previous message -->
-							<button aria-label="Previous message" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5" onclick={() => prevInstance(i)}>
-								<img src={ArrowLeftIcon} alt="Previous" class="w-5 h-5" />
-							</button>
-							<!-- Next message -->
-							<button aria-label="Next message" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5" onclick={() => nextInstance(i)}>
-								<img src={ArrowRightIcon} alt="Next" class="w-5 h-5" />
-							</button>
-						{/if}
-						<!-- Info Icon -->
-						<button aria-label="More info" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
-							<img src={InfoIcon} alt="Info" class="w-5 h-5" />
-						</button>
-						<!-- Action buttons -->
+					<!-- Message Content -->
+					<div class="flex flex-col min-w-0 relative group">
+						<div class="font-semibold text-zinc-100 break-all">{msg.instances[msg.active_id].createdBy}</div>
+						<div class="text-sm text-zinc-400 flex items-center mt-0.5">
+							Thought for 10 seconds...
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3 ml-1 flex-shrink-0">
+								<path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+							</svg>
+						</div>
+						{#each msg.instances[msg.active_id].body as body, bodyIndex}
+							<div class="mt-1 text-zinc-100">
+								<!-- {body.content} -->
+								<div class="markdown-stream-viewer">{@html processor.processFullMarkdown(body.content)}</div>
+							</div>
+						{/each}
 
-						<!-- Pencil Icon -->
-						<button aria-label="Edit" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
-							<img src={EditIcon} alt="Edit" class="w-5 h-5" />
-						</button>
-						<!-- Clipboard Icon -->
-						<button aria-label="Copy" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
-							<img src={CopyIcon} alt="Copy" class="w-5 h-5" />
-						</button>
-						<!-- Speaker Icon -->
-						<button aria-label="Read aloud" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
-							<img src={SpeakerIcon} alt="Read aloud" class="w-5 h-5" />
-						</button>
-						<!-- Trash Icon -->
-						<button aria-label="Delete" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
-							<img src={TrashIcon} alt="Delete" class="w-5 h-5" />
-						</button>
-						<!-- Refresh Icon -->
-						<button aria-label="Regenerate response" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
-							<img src={RefreshIcon} alt="Regenerate" class="w-5 h-5" />
-						</button>
+						<div class="mt-2 flex {chat.direction === 'rtl' ? 'space-x-reverse' : ''} space-x-2.5 text-zinc-400 items-center">
+							<!-- Instance navigation arrows -->
+							{#if msg.instances.length > 1}
+								<!-- Previous message -->
+								<button aria-label="Previous message" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5" onclick={() => prevInstance(i)}>
+									<img src={ArrowLeftIcon} alt="Previous" class="w-5 h-5" />
+								</button>
+								<!-- Next message -->
+								<button aria-label="Next message" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5" onclick={() => nextInstance(i)}>
+									<img src={ArrowRightIcon} alt="Next" class="w-5 h-5" />
+								</button>
+							{/if}
+							<!-- Info Icon -->
+							<button aria-label="More info" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
+								<img src={InfoIcon} alt="Info" class="w-5 h-5" />
+							</button>
+							<!-- Action buttons -->
+
+							<!-- Pencil Icon -->
+							<button aria-label="Edit" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
+								<img src={EditIcon} alt="Edit" class="w-5 h-5" />
+							</button>
+							<!-- Clipboard Icon -->
+							<button aria-label="Copy" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
+								<img src={CopyIcon} alt="Copy" class="w-5 h-5" />
+							</button>
+							<!-- Speaker Icon -->
+							<button aria-label="Read aloud" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
+								<img src={SpeakerIcon} alt="Read aloud" class="w-5 h-5" />
+							</button>
+							<!-- Trash Icon -->
+							<button aria-label="Delete" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
+								<img src={TrashIcon} alt="Delete" class="w-5 h-5" />
+							</button>
+							<!-- Refresh Icon -->
+							<button aria-label="Regenerate response" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
+								<img src={RefreshIcon} alt="Regenerate" class="w-5 h-5" />
+							</button>
+						</div>
 					</div>
 				</div>
-			</div>
-		{/each}
+			{/each}
+		{/if}
 	</div>
 	<ChatInput />
 </div>
