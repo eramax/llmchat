@@ -64,7 +64,7 @@ const OllamaService = {
             ' And this is the *final* piece of the stream.'
         ]
 
-        for (const chunk of chunks) {
+        for await (const chunk of chunks) {
             await new Promise(resolve => setTimeout(resolve, 500)) // Simulate network latency
             yield chunk
         }

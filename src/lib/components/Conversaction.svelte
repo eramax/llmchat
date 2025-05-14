@@ -4,6 +4,7 @@
 	import MarkdownViewer from './MarkdownViewer.svelte'
 	import {MarkdownStreamProcessor} from '$lib/utils/markdownStreamProcessor'
 	import {onMount} from 'svelte'
+	import OllamaService from '$lib/Services/OllamaService'
 	const ArrowLeftIcon = '/icons/arrow-left.svg'
 	const ArrowRightIcon = '/icons/arrow-right.svg'
 	const InfoIcon = '/icons/info.svg'
@@ -23,6 +24,7 @@
 	let mounted = $state(false)
 
 	onMount(() => {
+		OllamaService.init()
 		processor = new MarkdownStreamProcessor({
 			onStateUpdate: newState => {
 				finalizedHtmlContent = newState.finalizedHtmlContent
@@ -32,8 +34,12 @@
 			}
 		})
 		mounted = true
-		
 	})
+
+	async function testOllama() {
+		await processor.processStream(OllamaService.simulatedMarkdownChunks())
+		console.log(finalizedHtmlContent)
+	}
 
 	let chat = $state({
 		id: 'chat-1',
@@ -91,7 +97,7 @@
 						createdBy: 'llama3-7B',
 						parent_message_id: 'uuid-1a', // Parent is "How are you?"
 						metadata: {token_count: 12, tokenpersecond: 5},
-						body: [{task: 'think', content: 'Processing question...', duration: 2}, {content: "I'm an AI, so I don't have feelings, but I'm functioning well! How are you?"}]
+						body: [{task: 'think', content: 'Processing question...', duration: 2, isLoading: true}, {content: "I'm an AI, so I don't have feelings, but I'm functioning well! How are you?"}]
 					}
 				]
 			},
@@ -228,7 +234,12 @@
 						{#each msg.instances[msg.active_id].body as body, bodyIndex}
 							<div class="mt-1 text-zinc-100">
 								<!-- {body.content} -->
-								<div class="markdown-stream-viewer">{@html processor.processFullMarkdown(body.content)}</div>
+								{#if body.isLoading}
+									<div class="markdown-stream-viewer">{@html finalizedHtmlContent}</div>
+									<div class="markdown-stream-viewer">{@html activeHtml}</div>
+								{:else}
+									<div class="markdown-stream-viewer">{@html processor.processFullMarkdown(body.content)}</div>
+								{/if}
 							</div>
 						{/each}
 
@@ -267,7 +278,7 @@
 								<img src={TrashIcon} alt="Delete" class="w-5 h-5" />
 							</button>
 							<!-- Refresh Icon -->
-							<button aria-label="Regenerate response" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5">
+							<button aria-label="Regenerate response" class="hover:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-500 rounded p-0.5" onclick={testOllama}>
 								<img src={RefreshIcon} alt="Regenerate" class="w-5 h-5" />
 							</button>
 						</div>

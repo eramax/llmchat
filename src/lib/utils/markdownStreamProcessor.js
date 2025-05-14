@@ -143,6 +143,7 @@ export class MarkdownStreamProcessor {
     }
 
     async processStream(asyncGenerator) {
+        console.log(asyncGenerator)
         this.reset(); // This sets isLoading to true
 
         try {
