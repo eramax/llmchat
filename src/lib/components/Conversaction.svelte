@@ -1,7 +1,6 @@
 <script>
 	import ChatInput from './ChatInput.svelte'
 	import {v4 as uuidv4} from 'uuid'
-	import MarkdownViewer from './MarkdownViewer.svelte'
 	import {MarkdownStreamProcessor} from '$lib/utils/markdownStreamProcessor'
 	import {onMount} from 'svelte'
 	import OllamaService from '$lib/Services/OllamaService'
@@ -136,7 +135,6 @@
 					</div>
 				{/each}
 			</div>
-
 			<ChatInput />
 		</div>
 	</div>
