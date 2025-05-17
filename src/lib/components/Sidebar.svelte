@@ -1,35 +1,31 @@
-<aside class="w-64 bg-neutral-950 p-4 flex flex-col text-sm shrink-0">
+<aside class="sidebar">
 	<div class="flex-grow">
-		<!-- Top section -->
-		<div class="flex items-center justify-between mb-2">
-			<div class="flex items-center space-x-2">
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-neutral-400">
+		<div class="sidebar-header">
+			<div class="sidebar-title-area">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="sidebar-menu-icon">
 					<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
 				</svg>
-				<div class="flex items-center space-x-1.5">
-					<span class="font-semibold text-neutral-100">Chats</span>
-				</div>
+				<span class="sidebar-chats-title">Chats</span>
 			</div>
-			<button class="flex items-center justify-center w-6 h-6 rounded text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200 transition-colors" aria-label="New chat">
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+			<button class="sidebar-new-chat-btn" aria-label="New chat">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-xl">
 					<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
 				</svg>
 			</button>
 		</div>
-		<div class="space-y-0.5">
-			<a href="/" class="block pl-7 pr-2 py-1 rounded-md hover:bg-neutral-800 text-neutral-300 transition-colors">Today</a>
-			<a href="/" class="block pl-7 pr-2 py-1 rounded-md bg-neutral-700 text-neutral-100 font-medium transition-colors">New Chat</a>
-		</div>
+		<nav class="sidebar-nav">
+			<a href="/" class="sidebar-nav-link">Today</a>
+			<a href="/" class="sidebar-nav-link sidebar-nav-link-active">New Chat</a>
+		</nav>
 	</div>
 
-	<!-- User profile -->
-	<div class="mt-4 pt-4 border-t border-neutral-800">
-		<a href="/" class="flex items-center justify-between p-2 rounded-md hover:bg-neutral-800 transition-colors group">
-			<div class="flex items-center space-x-2">
-				<div class="w-7 h-7 bg-orange-500 rounded-full flex items-center justify-center text-sm font-semibold text-white shrink-0">A</div>
-				<span class="text-neutral-100 truncate">Ahmed</span>
+	<div class="sidebar-user-section">
+		<a href="/" class="sidebar-user-card">
+			<div class="sidebar-user-details">
+				<div class="sidebar-user-avatar">A</div>
+				<span class="sidebar-user-name">Ahmed</span>
 			</div>
-			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-neutral-500 opacity-0 group-hover:opacity-100 transition-opacity">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="sidebar-user-settings-icon">
 				<path
 					stroke-linecap="round"
 					stroke-linejoin="round"

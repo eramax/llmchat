@@ -6,12 +6,12 @@
 	let {children} = $props()
 </script>
 
-<div class="flex h-screen text-neutral-300">
+<div class="flex h-screen">
 	<!-- Sidebar -->
 	<Sidebar />
 
 	<!-- Main Content -->
-	<main class="flex-1 flex flex-col bg-neutral-900">
+	<main class="main-view">
 		<!-- Main content header -->
 		<Header />
 

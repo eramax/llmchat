@@ -1,3 +1,305 @@
 @import 'tailwindcss';
-@plugin '@tailwindcss/forms';
-@plugin '@tailwindcss/typography';
+
+@theme {
+	--color-background-body: theme(colors.neutral.900);
+	--color-text-body: theme(colors.neutral.300);
+
+	--color-surface-default: theme(colors.neutral.900);
+	--color-surface-emphasis: theme(colors.neutral.950);
+	--color-surface-interactive: theme(colors.neutral.800);
+
+	--color-text-default: theme(colors.neutral.300);
+	--color-text-muted: theme(colors.neutral.400);
+	--color-text-strong: theme(colors.neutral.100);
+	--color-text-inverted: theme(colors.white);
+	--color-text-placeholder: theme(colors.neutral.500);
+
+	--color-border-default: theme(colors.neutral.800);
+	--color-border-strong: theme(colors.neutral.700);
+
+	--color-icon-default: theme(colors.neutral.400);
+	--color-icon-hover: theme(colors.neutral.200);
+	--color-icon-strong: theme(colors.neutral.100);
+}
+
+@layer base {
+	body {
+		/* Or :global(body) if in a Svelte <style> block and this is not the global sheet */
+		background-color: var(--color-background-body);
+		color: var(--color-text-body);
+		font-family: theme(fontFamily.sans); /* Example: Applying a default font */
+	}
+}
+
+@utility flex-center {
+	@apply flex items-center; /* This @apply uses built-in Tailwind utilities */
+}
+@utility flex-between {
+	@apply flex items-center justify-between; /* This also uses built-in utilities */
+}
+
+/* Icon Sizing Utilities */
+@utility icon-sm {
+	@apply w-3 h-3;
+}
+@utility icon-md {
+	@apply w-4 h-4;
+}
+@utility icon-lg {
+	@apply w-5 h-5;
+}
+@utility icon-xl {
+	@apply w-6 h-6;
+}
+@utility btn-icon {
+	@apply flex-center justify-center rounded transition-colors; /* Now @apply flex-center should work */
+}
+@utility badge {
+	@apply text-xs px-1.5 py-0.5 rounded;
+}
+@utility btn-icon-actionable {
+	@apply btn-icon; /* Applying another component class */
+	color: var(--color-icon-default);
+	&:hover {
+		background-color: var(--color-surface-interactive);
+		color: var(--color-icon-hover);
+	}
+}
+
+@utility badge-blue {
+	@apply badge bg-blue-600/80 text-white;
+}
+
+@layer components {
+	/* Buttons */
+
+	.btn-icon-chat {
+		@apply btn-icon p-0.5 focus:outline-none focus:ring-2;
+		&:hover {
+			color: theme(colors.zinc.200); /* Using theme() directly */
+		}
+		&:focus-visible {
+			/* More specific focus state */
+			box-shadow: 0 0 0 2px theme(colors.zinc.500); /* Example for ring */
+		}
+	}
+
+	/* Badges */
+
+	.badge-neutral {
+		@apply badge;
+		background-color: var(--color-surface-interactive);
+		color: var(--color-text-default);
+	}
+
+	.badge-orange {
+		@apply badge bg-orange-600/40 text-orange-200;
+	}
+
+	/* Sidebar */
+	.sidebar {
+		@apply w-64 shrink-0 p-4 flex flex-col text-sm;
+		background-color: var(--color-surface-emphasis);
+	}
+	.sidebar-header {
+		@apply flex-between mb-2;
+	}
+	.sidebar-title-area {
+		@apply flex-center space-x-2;
+	}
+	.sidebar-menu-icon {
+		@apply icon-lg;
+		color: var(--color-icon-default);
+	}
+	.sidebar-chats-title {
+		@apply font-semibold;
+		color: var(--color-text-strong);
+	}
+	.sidebar-new-chat-btn {
+		@apply btn-icon-actionable w-6 h-6; /* icon-xl applied directly to SVG if it's an SVG element */
+	}
+	.sidebar-nav {
+		@apply space-y-0.5;
+	}
+	.sidebar-nav-link {
+		@apply block pl-7 pr-2 py-1 rounded-md transition-colors;
+		color: var(--color-text-default);
+		&:hover {
+			background-color: var(--color-surface-interactive);
+		}
+	}
+	.sidebar-nav-link-active {
+		background-color: var(--color-border-strong); /* Mapped from bg-neutral-700 */
+		color: var(--color-text-strong);
+		@apply font-medium;
+	}
+	.sidebar-user-section {
+		@apply mt-4 pt-4 border-t;
+		border-top-color: var(--color-border-default);
+	}
+	.sidebar-user-card {
+		@apply flex-between p-2 rounded-md transition-colors;
+		&:hover {
+			background-color: var(--color-surface-interactive);
+		}
+	}
+	.sidebar-user-details {
+		@apply flex-center space-x-2;
+	}
+	.sidebar-user-avatar {
+		@apply w-7 h-7 rounded-full flex-center justify-center shrink-0 bg-orange-500 text-sm font-semibold;
+		color: var(--color-text-inverted);
+	}
+	.sidebar-user-name {
+		color: var(--color-text-strong);
+		@apply truncate;
+	}
+	.sidebar-user-settings-icon {
+		@apply icon-md opacity-0 transition-opacity group-hover:opacity-100;
+		color: var(--color-text-placeholder);
+	}
+
+	/* Main Content Area */
+	.main-view {
+		@apply flex-1 flex flex-col;
+		background-color: var(--color-surface-default);
+	}
+	.main-header-clickable {
+		@apply p-3 h-[74px] border rounded-md flex-between shrink-0 cursor-pointer;
+		background-color: var(--color-surface-default);
+		border-color: var(--color-border-default);
+	}
+	.main-header-loader {
+		@apply flex-center justify-center w-full;
+	}
+	.spinner {
+		@apply animate-spin rounded-full h-5 w-5 border-t-2 border-l-2 border-blue-500;
+	}
+	.loader-text {
+		@apply ml-2 text-sm;
+		color: var(--color-text-muted);
+	}
+
+	.model-display {
+		@apply grow;
+	}
+	.model-info-row {
+		@apply flex-center;
+	}
+	.model-name-details {
+		@apply text-sm truncate max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg;
+		color: var(--color-text-strong);
+	}
+	.model-name {
+		@apply font-medium;
+	}
+	.model-tags {
+		@apply ml-2;
+		color: var(--color-text-muted);
+	}
+	.model-size-tag {
+		@apply badge-blue ml-2 font-medium px-2;
+	}
+	.dropdown-indicator {
+		@apply icon-sm ml-1 shrink-0 transition-transform duration-200;
+		color: var(--color-text-placeholder);
+	}
+	.model-path {
+		@apply text-xs truncate max-w-xs;
+		color: var(--color-text-placeholder);
+	}
+	.main-header-actions {
+		@apply flex-center space-x-3 shrink-0;
+	}
+	.main-header-action-icon {
+		@apply icon-lg cursor-pointer transition-colors;
+		color: var(--color-icon-default);
+		&:hover {
+			color: var(--color-icon-strong);
+		}
+	}
+	.empty-state-text {
+		@apply text-sm w-full text-center;
+		color: var(--color-text-muted);
+	}
+
+	.model-dropdown-panel {
+		@apply absolute z-10 mt-1 w-full border rounded-md shadow-lg max-h-60 overflow-y-auto;
+		background-color: var(--color-surface-default);
+		border-color: var(--color-border-default);
+	}
+	.model-dropdown-item {
+		@apply p-2 cursor-pointer transition-colors border-b last:border-b-0;
+		border-bottom-color: var(--color-border-default);
+		&:hover {
+			background-color: var(--color-surface-interactive);
+		}
+	}
+
+	/* Chat Area */
+	.chat-panel {
+		@apply flex-1 flex flex-col items-center justify-center p-2 sm:p-3 w-full relative overflow-y-auto;
+		color: var(--color-text-muted);
+	}
+	.chat-window {
+		@apply w-full min-h-full flex flex-col justify-between;
+		color: var(--color-text-inverted); /* Base text color for chat messages */
+	}
+	.message-list {
+		@apply space-y-6;
+	}
+	.message-bubble {
+		@apply flex items-start w-full;
+	}
+	.message-avatar-container {
+		@apply shrink-0 w-10 h-10 rounded-full bg-white flex-center justify-center;
+	}
+	.message-avatar-id {
+		@apply text-black font-bold text-lg select-none;
+	}
+	.message-text-content {
+		@apply flex flex-col min-w-0 relative w-full;
+	}
+	.message-sender {
+		@apply font-semibold break-words;
+		/* Consider if sender needs a different color, e.g., var(--color-text-strong) or inherited */
+	}
+	.message-timing {
+		@apply text-sm flex-center mt-0.5;
+		color: theme(colors.zinc.400); /* Using theme() for one-off color */
+	}
+	.message-timing-icon {
+		@apply icon-sm ml-1 shrink-0;
+	}
+	.message-body {
+		@apply mt-1 w-full;
+		/* color will be inherited from .chat-window or can be set specifically */
+	}
+	.message-actions-toolbar {
+		@apply mt-2 flex items-center space-x-2.5;
+		color: theme(colors.zinc.400);
+	}
+	.message-action-icon {
+		@apply icon-lg;
+	}
+
+	/* Chat Input */
+	.chat-input-field-area {
+		@apply w-full mt-4 rounded-xl p-3 flex-center space-x-3 shadow-lg;
+		background-color: var(--color-surface-interactive);
+	}
+	.chat-input-btn {
+		@apply icon-xl cursor-pointer transition-colors shrink-0;
+		color: var(--color-icon-default);
+		&:hover {
+			color: var(--color-icon-hover);
+		}
+	}
+	.chat-input {
+		@apply flex-1 bg-transparent text-sm focus:outline-none;
+		color: var(--color-text-strong);
+		&::placeholder {
+			color: var(--color-text-placeholder);
+		}
+	}
+}

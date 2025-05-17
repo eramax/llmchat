@@ -172,4 +172,48 @@ export class MarkdownStreamProcessor {
         const html = marked.parse(markdownString, this.#markedOptions);
         return html
     }
+
+    use(tag, component, options = { escape: true }) {
+        marked.use({
+            extensions: [
+                {
+                    name: 'customTag',
+                    level: 'inline', // 'block' or 'inline'
+                    start(src) {
+                        return src.indexOf(tag); // Returns an index or -1
+                    },
+                    tokenizer(src, tokens) {
+                        const index = src.indexOf(tag);
+
+                        if (index == -1) return
+                        //debugger;
+
+                        const content = src.substring(tag.length).trim();
+                        const endIndex = content.indexOf(tag);
+
+                        if (endIndex === -1) return;
+
+                        const componentContent = content.substring(0, endIndex).trim();
+                        const raw = src.substring(0, tag.length + componentContent.length + tag.length);
+
+                        return {
+                            type: 'customTag',
+                            raw: raw,
+                            content: componentContent,
+                        };
+                    },
+                    renderer(token) {
+                        // Render the Svelte component to HTML
+                        return { component: component, children: token.content };
+                    },
+                },
+            ],
+        });
+    }
 }
+
+
+
+
+
+
