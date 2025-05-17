@@ -59,7 +59,7 @@
 </script>
 
 <div class="relative">
-	<header class="main-header-clickable" on:click={toggleDropdown}>
+	<header class="main-header-clickable" onclick={toggleDropdown}>
 		{#if isLoading}
 			<div class="main-header-loader">
 				<div class="spinner"></div>
@@ -98,7 +98,7 @@
 	{#if isDropdownOpen && !isLoading}
 		<div class="model-dropdown-panel">
 			{#each modelList as model (model.id)}
-				<div class="model-dropdown-item" on:click={() => selectModel(model)} on:keypress={() => selectModel(model)} role="button" tabindex="0">
+				<div class="model-dropdown-item" onclick={() => selectModel(model)} onkeypress={() => selectModel(model)} role="button" tabindex="0">
 					<div>
 						<div class="model-info-row">
 							<span class="model-name-details !max-w-full">

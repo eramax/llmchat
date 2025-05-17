@@ -115,10 +115,10 @@
 							{/each}
 							<div class="message-actions-toolbar" class:space-x-reverse={chat.direction === 'rtl'}>
 								{#if msg.instances.length > 1}
-									<button aria-label="Previous message" class="btn-icon-chat" on:click={() => prevInstance(i)}>
+									<button aria-label="Previous message" class="btn-icon-chat" onclick={() => prevInstance(i)}>
 										<img src={ArrowLeftIcon} alt="Previous" class="message-action-icon" />
 									</button>
-									<button aria-label="Next message" class="btn-icon-chat" on:click={() => nextInstance(i)}>
+									<button aria-label="Next message" class="btn-icon-chat" onclick={() => nextInstance(i)}>
 										<img src={ArrowRightIcon} alt="Next" class="message-action-icon" />
 									</button>
 								{/if}
@@ -127,7 +127,7 @@
 								<button aria-label="Copy" class="btn-icon-chat"><img src={CopyIcon} alt="Copy" class="message-action-icon" /></button>
 								<button aria-label="Read aloud" class="btn-icon-chat"><img src={SpeakerIcon} alt="Read aloud" class="message-action-icon" /></button>
 								<button aria-label="Delete" class="btn-icon-chat"><img src={TrashIcon} alt="Delete" class="message-action-icon" /></button>
-								<button aria-label="Regenerate response" class="btn-icon-chat" on:click={testOllama}>
+								<button aria-label="Regenerate response" class="btn-icon-chat" onclick={testOllama}>
 									<img src={RefreshIcon} alt="Regenerate" class="message-action-icon" />
 								</button>
 							</div>
