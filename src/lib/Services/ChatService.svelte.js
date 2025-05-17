@@ -1,5 +1,7 @@
 export const loadChat = async (chatId) => {
-    let testmarkdown = await fetch('/test2.md').then(res => res.text())
+    let md1 = await fetch('/md1.md').then(res => res.text())
+    let md2 = await fetch('/md2.md').then(res => res.text())
+
     let chat = {
         id: 'chat-1',
         title: 'Chat Title',
@@ -17,7 +19,7 @@ export const loadChat = async (chatId) => {
                         createdAt: '2023-10-01T12:00:00Z',
                         createdBy: 'Ahmed',
                         parent_message_id: null,
-                        body: [{ content: testmarkdown }]
+                        body: [{ content: md2 }]
                     },
                     {
                         message_id: 'uuid-1a',
@@ -47,7 +49,7 @@ export const loadChat = async (chatId) => {
                         createdBy: 'llama3-8B',
                         parent_message_id: 'uuid-1', // Parent is "Hi"
                         metadata: { token_count: 15, tokenpersecond: 7 },
-                        body: [{ task: 'think', content: 'Analyzing greeting...', duration: 3 }, { content: 'Hi there! What can I help you with?' }]
+                        body: [{ task: 'think', content: 'Analyzing greeting...', duration: 3 }, { content: md1 }]
                     },
                     // Branch 2: Responses to "How are you?" (uuid-1a)
                     {
