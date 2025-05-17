@@ -59,7 +59,7 @@
 </script>
 
 <div class="relative">
-	<header class="main-header-clickable" onclick={toggleDropdown}>
+	<header class="main-header-clickable" onclick={toggleDropdown} role="button" tabindex="0" onkeypress={toggleDropdown}>
 		{#if isLoading}
 			<div class="main-header-loader">
 				<div class="spinner"></div>
